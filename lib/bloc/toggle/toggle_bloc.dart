@@ -5,9 +5,11 @@ part 'toggle_event.dart';
 part 'toggle_state.dart';
 
 class ToggleBloc extends Bloc<ToggleEvent, ToggleState> {
-  ToggleBloc() : super(ToggleInitial()) {
-    on<ToggleEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+  ToggleBloc() : super(const ToggleState()) {
+    on<ToggleButtonPressed>(_toggle);
+  }
+
+  void _toggle(ToggleButtonPressed event, Emitter<ToggleState> emit) {
+    emit(state.copyWith(toggleValue: !state.toggleValue));
   }
 }

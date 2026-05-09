@@ -6,3 +6,5 @@ sealed class ToggleEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class ToggleButtonPressed extends ToggleEvent{}

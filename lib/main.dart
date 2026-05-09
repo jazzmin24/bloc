@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:bloc_learning/bloc/counter/counter_bloc.dart';
+import 'package:bloc_learning/bloc/slider/slider_bloc.dart';
+import 'package:bloc_learning/bloc/toggle/toggle_bloc.dart';
 import 'package:equatable/equatable.dart'; //imported equatable package
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,8 +15,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CounterBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => CounterBloc()),
+        BlocProvider(create: (context) => ToggleBloc()),
+        BlocProvider(create: (context) => SliderBloc()),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -46,6 +52,28 @@ class _CounterPageState extends State<CounterPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("Toggle Button:  ",
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.w400)),
+                BlocBuilder<ToggleBloc, ToggleState>(
+                  builder: (context, state) {
+                    log("BlocBuilder for ToggleBloc building");
+                    return Switch(
+                        value: state.toggleValue,
+                        onChanged: (value) {
+                          context.read<ToggleBloc>().add(ToggleButtonPressed());
+                        });
+                  },
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             BlocBuilder<CounterBloc, CounterState>(builder: (context, state) {
               log("BlocBuilder building");
               return Text("Value: ${state.counterValue}",
@@ -72,7 +100,28 @@ class _CounterPageState extends State<CounterPage> {
                     },
                     child: const Text("Decrement")),
               ],
-            )
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            BlocBuilder<SliderBloc, SliderState>(builder: (context, state) {
+              log("BlocBuilder building for Red Container");
+              return Container(
+                color: Colors.red.withOpacity(state.sliderValue),
+                height: 100,
+                width: 100,
+              );
+            }),
+            BlocBuilder<SliderBloc, SliderState>(builder: (context, state) {
+              log("BlocBuilder building for SliderBloc");
+              return Slider(
+                  value: state.sliderValue,
+                  onChanged: (value) {
+                    context
+                        .read<SliderBloc>()
+                        .add(SliderValueEvent(slider: value));
+                  });
+            })
           ],
         ),
       ),
