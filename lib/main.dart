@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:bloc_learning/bloc/counter/bloc/counter_bloc.dart';
+import 'package:bloc_learning/bloc/counter/counter_bloc.dart';
 import 'package:equatable/equatable.dart'; //imported equatable package
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
