@@ -37,6 +37,7 @@ class CounterPage extends StatefulWidget {
 class _CounterPageState extends State<CounterPage> {
   @override
   Widget build(BuildContext context) {
+    log("Complete widget tree is building");
     return Scaffold(
       appBar: AppBar(
         title: const Text("Counter App"),
@@ -46,6 +47,7 @@ class _CounterPageState extends State<CounterPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BlocBuilder<CounterBloc, CounterState>(builder: (context, state) {
+              log("BlocBuilder building");
               return Text("Value: ${state.counterValue}",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600));
             }),
@@ -59,14 +61,16 @@ class _CounterPageState extends State<CounterPage> {
                 ElevatedButton(
                     onPressed: () {
                       context.read<CounterBloc>().add(IncrementEvent());
-                    }, child: const Text("Increment")),
+                    },
+                    child: const Text("Increment")),
                 const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
                     onPressed: () {
                       context.read<CounterBloc>().add(DecrementEvent());
-                    }, child: const Text("Decrement")),
+                    },
+                    child: const Text("Decrement")),
               ],
             )
           ],
