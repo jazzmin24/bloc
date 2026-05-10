@@ -12,5 +12,5 @@ class ImagePickerState extends Equatable {
   }
 
   @override
-  List<Object> get props => [imageFile ?? ""];
+  List<Object?> get props => [imageFile?.path];
 }
