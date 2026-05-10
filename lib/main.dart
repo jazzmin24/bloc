@@ -1,7 +1,10 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:bloc_learning/bloc/counter/counter_bloc.dart';
+import 'package:bloc_learning/bloc/image_picker/image_picker_bloc.dart';
 import 'package:bloc_learning/bloc/slider/slider_bloc.dart';
 import 'package:bloc_learning/bloc/toggle/toggle_bloc.dart';
+import 'package:bloc_learning/utils/image_picker_utils.dart';
 import 'package:equatable/equatable.dart'; //imported equatable package
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +23,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => CounterBloc()),
         BlocProvider(create: (context) => ToggleBloc()),
         BlocProvider(create: (context) => SliderBloc()),
+        BlocProvider(create: (context) => ImagePickerBloc(ImagePickerUtils())),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -121,13 +125,66 @@ class _CounterPageState extends State<CounterPage> {
                         .read<SliderBloc>()
                         .add(SliderValueEvent(slider: value));
                   });
-            })
+            }),
+            BlocBuilder<ImagePickerBloc, ImagePickerState>(
+                builder: (context, state) {
+              log("BlocBuilder building for Image Picker");
+              if (state.imageFile == null) {
+                return InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (sheetContext) {
+                        return SafeArea(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                leading: Icon(Icons.camera_alt),
+                                title: Text("Camera"),
+                                onTap: () {
+                                  Navigator.pop(sheetContext);
+                                  context
+                                      .read<ImagePickerBloc>()
+                                      .add(CameraCapture());
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.photo_library),
+                                title: Text("Gallery"),
+                                onTap: () {
+                                  Navigator.pop(sheetContext);
+                                  context
+                                      .read<ImagePickerBloc>()
+                                      .add(GalleryImagePicker());
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: CircleAvatar(
+                    child: Icon(Icons.camera),
+                  ),
+                );
+              } else {
+                return Image.file(
+                  File(state.imageFile!.path),
+                );
+              }
+            }),
           ],
         ),
       ),
     );
   }
 }
+
+
+
+/// copywith function - jb bhi koi new state aati h usko change kr skte h
 
 
 
